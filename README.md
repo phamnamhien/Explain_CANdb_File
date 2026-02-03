@@ -9,75 +9,122 @@ File `Pack_DBC_V0.1.dbc` là file CAN Database (định dạng Vector DBC) mô t
 - **Bus Type:** CAN
 - **Database Name:** EV
 
+> **LGC là gì?** LGC là viết tắt của **LG Chem** (nay là LG Energy Solution) - nhà sản xuất cell pin Lithium-ion cung cấp cho VinFast. Tên "Vinfast Initial LGC" cho biết đây là phiên bản DBC ban đầu dành cho hệ thống pin sử dụng cell LG Chem.
+
 ## Các Node trên mạng CAN
 
 | Node | Mô tả |
 |------|--------|
-| **BMS1** | Battery Module Master (LGC) - Module pin chính |
-| **BMS2** | Battery Module Slave - Module pin phụ |
-| **DC_DC** | Bộ chuyển đổi DC-DC (node nhận dữ liệu) |
+| **BMS1** | Battery Management System 1 - Hệ thống quản lý pin cho Pack pin thứ nhất (48V) |
+| **BMS2** | Battery Management System 2 - Hệ thống quản lý pin cho Pack pin thứ hai (48V) |
+| **DC_DC** | Bộ chuyển đổi DC-DC - nhận dữ liệu từ cả hai BMS |
 
-Hệ thống bao gồm 2 module BMS, mỗi module quản lý **13 cell pin**. Cả hai BMS đều gửi dữ liệu tới node DC_DC.
+### Kiến trúc hệ thống
 
-## Bảng Value Table
+Hệ thống sử dụng **2 Pack pin song song**, mỗi Pack có một BMS riêng biệt:
 
-| Tên | Giá trị | Mô tả |
-|-----|---------|--------|
-| bms_rentalinfoPackType | 0 = TBD, 1 = Pack E1, 2 = Pack D1 | Loại Pack |
-| bms_rentalinfoTBD1 | 0 = TBD, 1 = 1.9kWh, 2 = 1.2kWh | Dung lượng |
-| bms_resultCheckScuSn | 0 = FAIL, 1 = PASS | Kết quả kiểm tra SCU SN |
+```
+┌──────────┐     CAN Bus      ┌──────────┐
+│  BMS1    │◄────────────────►│          │
+│ (Pack 1) │                   │  DC_DC   │
+│ 13 cells │                   │ Converter│
+└──────────┘                   │          │
+                               │          │
+┌──────────┐                   │          │
+│  BMS2    │◄────────────────►│          │
+│ (Pack 2) │                   └──────────┘
+│ 13 cells │
+└──────────┘
+```
+
+- **BMS1** và **BMS2** là hai module BMS **ngang hàng**, mỗi module quản lý độc lập một Pack pin gồm **13 cell** mắc nối tiếp.
+- Hai BMS đều gửi dữ liệu lên cùng một CAN Bus để DC_DC converter nhận và xử lý.
+- Cả hai BMS có **cấu trúc message và signal giống hệt nhau**, chỉ khác nhau ở CAN ID (BMS1: 0x002, 0x300-0x32F; BMS2: 0x003, 0x330-0x35F).
+
+## Bảng Value Table (Bảng tra cứu giá trị)
+
+Value Table trong file DBC là **bảng ánh xạ (mapping)** giữa một giá trị số nguyên trong CAN data và ý nghĩa thực tế của nó dưới dạng chuỗi ký tự. Khi BMS gửi một giá trị số qua CAN, phần mềm đọc (như CANalyzer, CANoe) sẽ tra bảng này để hiển thị tên dễ hiểu thay vì số thô.
+
+### bms_rentalinfoPackType - Loại Pack pin
+
+Xác định **dòng sản phẩm** (model) của Pack pin đang được sử dụng.
+
+| Giá trị số | Ý nghĩa | Giải thích |
+|:---:|---|---|
+| 0 | TBD | To Be Determined - Chưa xác định, giá trị mặc định khi chưa cấu hình |
+| 1 | Pack E1 | Pack pin dòng E1 |
+| 2 | Pack D1 | Pack pin dòng D1 |
+
+### bms_rentalinfoTBD1 - Dung lượng danh định
+
+Xác định **mức dung lượng năng lượng** (kWh) của Pack pin.
+
+| Giá trị số | Ý nghĩa | Giải thích |
+|:---:|---|---|
+| 0 | TBD | Chưa xác định |
+| 1 | 1.9 kWh | Pack pin có dung lượng danh định 1.9 kWh |
+| 2 | 1.2 kWh | Pack pin có dung lượng danh định 1.2 kWh |
+
+### bms_resultCheckScuSn - Kết quả kiểm tra SCU Serial Number
+
+Kết quả kiểm tra tính hợp lệ của **SCU Serial Number** (SCU - System Control Unit: bộ điều khiển hệ thống). BMS kiểm tra xem số serial của SCU có khớp/hợp lệ hay không.
+
+| Giá trị số | Ý nghĩa | Giải thích |
+|:---:|---|---|
+| 0 | FAIL | Kiểm tra thất bại - Serial Number không hợp lệ |
+| 1 | PASS | Kiểm tra thành công - Serial Number hợp lệ |
 
 ---
 
 ## Danh sách CAN Message
 
-### BMS1 - Battery Module Master (ID: 0x002 - 0x32F)
+### BMS1 - Pack pin thứ nhất (ID: 0x002 - 0x32F)
 
-| CAN ID (Hex) | CAN ID (Dec) | Tên Message | DLC | Cycle (ms) | Mô tả |
-|:---:|:---:|---|:---:|:---:|---|
-| 0x002 | 2 | BMS1_ISO_Message | 8 | - | Truyền thông ISO 15765 |
-| 0x300 | 768 | BMS1_ControlSystem | 8 | 150 | Điều khiển hệ thống (giới hạn dòng/công suất sạc-xả) |
-| 0x301 | 769 | BMS1_InfoCharging | 8 | 1000 | Thông tin trạng thái sạc |
-| 0x303 | 771 | BMS1_InfoBms | 8 | 150 | Trạng thái BMS (user mode, ignition, emergency) |
-| 0x304 | 772 | BMS1_InfoCellBalancing | 8 | 1000 | Trạng thái cân bằng cell (CB01-CB13) |
-| 0x306 | 774 | BMS1_InfoDemCell | 8 | 150 | Chẩn đoán lỗi Cell (quá áp, thấp áp, quá dòng, quá nhiệt) |
-| 0x309 | 777 | BMS1_InfoPack | 8 | 150 | Trạng thái Pack (điện áp, dòng điện, FET) |
-| 0x30A | 778 | BMS1_InfoSox | 8 | 1000 | SOC, SOH, Cycle Count, thời gian sạc còn lại |
-| 0x30B | 779 | BMS1_InfoAccumDsgChgCapacity | 8 | 3000 | Dung lượng tích lũy sạc/xả (Ah) |
-| 0x30E | 782 | BMS1_InfoContactor | 8 | 150 | Trạng thái Contactor (điện áp ADC) |
-| 0x310 | 784 | BMS1_InfoVoltageCell | 8 | 500 | Tổng hợp điện áp Cell (Avg, Min, Max) |
-| 0x311 | 785 | BMS1_InfoVoltageCell1 | 8 | 500 | Điện áp Cell 01 - 04 |
-| 0x312 | 786 | BMS1_InfoVoltageCell2 | 8 | 500 | Điện áp Cell 05 - 08 |
-| 0x313 | 787 | BMS1_InfoVoltageCell3 | 8 | 500 | Điện áp Cell 09 - 12 |
-| 0x314 | 788 | BMS1_InfoVoltageCell4 | 2 | 500 | Điện áp Cell 13 |
-| 0x315 | 789 | BMS1_InfoDemBMS | 4 | 500 | Chẩn đoán lỗi BMS (FET, Fuse, ASIC) |
-| 0x320 | 800 | BMS1_InfoTemperatureCell | 8 | 1000 | Nhiệt độ Cell (Avg, Min, Max) |
-| 0x322 | 802 | BMS1_InfoTemperatureCB | 8 | 500 | Nhiệt độ mạch cân bằng và FET |
-| 0x32F | 815 | BMS1_InfoPackVersion | 8 | 1000 | Phiên bản SW/HW/Bootloader, ngày sản xuất |
+| CAN ID | Tên Message | DLC | Cycle (ms) | Mô tả |
+|:---:|---|:---:|:---:|---|
+| 0x002 | BMS1_ISO_Message | 8 | - | Truyền thông ISO 15765 |
+| 0x300 | BMS1_ControlSystem | 8 | 150 | Điều khiển hệ thống (giới hạn dòng/công suất sạc-xả) |
+| 0x301 | BMS1_InfoCharging | 8 | 1000 | Thông tin trạng thái sạc |
+| 0x303 | BMS1_InfoBms | 8 | 150 | Trạng thái BMS (user mode, ignition, emergency) |
+| 0x304 | BMS1_InfoCellBalancing | 8 | 1000 | Trạng thái cân bằng cell (CB01-CB13) |
+| 0x306 | BMS1_InfoDemCell | 8 | 150 | Chẩn đoán lỗi Cell (quá áp, thấp áp, quá dòng, quá nhiệt) |
+| 0x309 | BMS1_InfoPack | 8 | 150 | Trạng thái Pack (điện áp, dòng điện, FET) |
+| 0x30A | BMS1_InfoSox | 8 | 1000 | SOC, SOH, Cycle Count, thời gian sạc còn lại |
+| 0x30B | BMS1_InfoAccumDsgChgCapacity | 8 | 3000 | Dung lượng tích lũy sạc/xả (Ah) |
+| 0x30E | BMS1_InfoContactor | 8 | 150 | Trạng thái Contactor (điện áp ADC) |
+| 0x310 | BMS1_InfoVoltageCell | 8 | 500 | Tổng hợp điện áp Cell (Avg, Min, Max) |
+| 0x311 | BMS1_InfoVoltageCell1 | 8 | 500 | Điện áp Cell 01 - 04 |
+| 0x312 | BMS1_InfoVoltageCell2 | 8 | 500 | Điện áp Cell 05 - 08 |
+| 0x313 | BMS1_InfoVoltageCell3 | 8 | 500 | Điện áp Cell 09 - 12 |
+| 0x314 | BMS1_InfoVoltageCell4 | 2 | 500 | Điện áp Cell 13 |
+| 0x315 | BMS1_InfoDemBMS | 4 | 500 | Chẩn đoán lỗi BMS (FET, Fuse, ASIC) |
+| 0x320 | BMS1_InfoTemperatureCell | 8 | 1000 | Nhiệt độ Cell (Avg, Min, Max) |
+| 0x322 | BMS1_InfoTemperatureCB | 8 | 500 | Nhiệt độ mạch cân bằng và FET |
+| 0x32F | BMS1_InfoPackVersion | 8 | 1000 | Phiên bản SW/HW/Bootloader, ngày sản xuất |
 
-### BMS2 - Battery Module Slave (ID: 0x003 - 0x35F)
+### BMS2 - Pack pin thứ hai (ID: 0x003 - 0x35F)
 
-| CAN ID (Hex) | CAN ID (Dec) | Tên Message | DLC | Cycle (ms) | Mô tả |
-|:---:|:---:|---|:---:|:---:|---|
-| 0x003 | 3 | BMS2_ISO_Message | 8 | - | Truyền thông ISO 15765 |
-| 0x330 | 816 | BMS2_ControlSystem | 8 | 150 | Điều khiển hệ thống (giới hạn dòng/công suất sạc-xả) |
-| 0x331 | 817 | BMS2_InfoCharging | 8 | 1000 | Thông tin trạng thái sạc |
-| 0x333 | 819 | BMS2_InfoBms | 8 | 150 | Trạng thái BMS (user mode, ignition, emergency) |
-| 0x334 | 820 | BMS2_InfoCellBalancing | 8 | 1000 | Trạng thái cân bằng cell (CB01-CB13) |
-| 0x336 | 822 | BMS2_InfoDemCell | 8 | 150 | Chẩn đoán lỗi Cell (quá áp, thấp áp, quá dòng, quá nhiệt) |
-| 0x339 | 825 | BMS2_InfoPack | 8 | 150 | Trạng thái Pack (điện áp, dòng điện, FET) |
-| 0x33A | 826 | BMS2_InfoSox | 8 | 1000 | SOC, SOH, Cycle Count, thời gian sạc còn lại |
-| 0x33B | 827 | BMS2_InfoAccumDsgChgCapacity | 8 | 3000 | Dung lượng tích lũy sạc/xả (Ah) |
-| 0x33E | 830 | BMS2_InfoContactor | 8 | 150 | Trạng thái Contactor (điện áp ADC) |
-| 0x340 | 832 | BMS2_InfoVoltageCell | 8 | 500 | Tổng hợp điện áp Cell (Avg, Min, Max) |
-| 0x341 | 833 | BMS2_InfoVoltageCell1 | 8 | 500 | Điện áp Cell 01 - 04 |
-| 0x342 | 834 | BMS2_InfoVoltageCell2 | 8 | 500 | Điện áp Cell 05 - 08 |
-| 0x343 | 835 | BMS2_InfoVoltageCell3 | 8 | 500 | Điện áp Cell 09 - 12 |
-| 0x344 | 836 | BMS2_InfoVoltageCell4 | 8 | 500 | Điện áp Cell 13 |
-| 0x345 | 837 | BMS2_InfoDemBMS | 4 | 500 | Chẩn đoán lỗi BMS (FET, Fuse, ASIC) |
-| 0x350 | 848 | BMS2_InfoTemperatureCell | 8 | 1000 | Nhiệt độ Cell (Avg, Min, Max) |
-| 0x352 | 850 | BMS2_InfoTemperatureCB | 8 | 500 | Nhiệt độ mạch cân bằng và FET |
-| 0x35F | 863 | BMS2_InfoPackVersion | 8 | 1000 | Phiên bản SW/HW/Bootloader, ngày sản xuất |
+| CAN ID | Tên Message | DLC | Cycle (ms) | Mô tả |
+|:---:|---|:---:|:---:|---|
+| 0x003 | BMS2_ISO_Message | 8 | - | Truyền thông ISO 15765 |
+| 0x330 | BMS2_ControlSystem | 8 | 150 | Điều khiển hệ thống (giới hạn dòng/công suất sạc-xả) |
+| 0x331 | BMS2_InfoCharging | 8 | 1000 | Thông tin trạng thái sạc |
+| 0x333 | BMS2_InfoBms | 8 | 150 | Trạng thái BMS (user mode, ignition, emergency) |
+| 0x334 | BMS2_InfoCellBalancing | 8 | 1000 | Trạng thái cân bằng cell (CB01-CB13) |
+| 0x336 | BMS2_InfoDemCell | 8 | 150 | Chẩn đoán lỗi Cell (quá áp, thấp áp, quá dòng, quá nhiệt) |
+| 0x339 | BMS2_InfoPack | 8 | 150 | Trạng thái Pack (điện áp, dòng điện, FET) |
+| 0x33A | BMS2_InfoSox | 8 | 1000 | SOC, SOH, Cycle Count, thời gian sạc còn lại |
+| 0x33B | BMS2_InfoAccumDsgChgCapacity | 8 | 3000 | Dung lượng tích lũy sạc/xả (Ah) |
+| 0x33E | BMS2_InfoContactor | 8 | 150 | Trạng thái Contactor (điện áp ADC) |
+| 0x340 | BMS2_InfoVoltageCell | 8 | 500 | Tổng hợp điện áp Cell (Avg, Min, Max) |
+| 0x341 | BMS2_InfoVoltageCell1 | 8 | 500 | Điện áp Cell 01 - 04 |
+| 0x342 | BMS2_InfoVoltageCell2 | 8 | 500 | Điện áp Cell 05 - 08 |
+| 0x343 | BMS2_InfoVoltageCell3 | 8 | 500 | Điện áp Cell 09 - 12 |
+| 0x344 | BMS2_InfoVoltageCell4 | 8 | 500 | Điện áp Cell 13 |
+| 0x345 | BMS2_InfoDemBMS | 4 | 500 | Chẩn đoán lỗi BMS (FET, Fuse, ASIC) |
+| 0x350 | BMS2_InfoTemperatureCell | 8 | 1000 | Nhiệt độ Cell (Avg, Min, Max) |
+| 0x352 | BMS2_InfoTemperatureCB | 8 | 500 | Nhiệt độ mạch cân bằng và FET |
+| 0x35F | BMS2_InfoPackVersion | 8 | 1000 | Phiên bản SW/HW/Bootloader, ngày sản xuất |
 
 ---
 
