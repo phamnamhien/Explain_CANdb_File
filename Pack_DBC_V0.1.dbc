@@ -40,28 +40,28 @@ VAL_TABLE_ bms_resultCheckScuSn 1 "PASS" 0 "FAIL" ;
 
 
 BO_ 3 BMS2_ISO_Message: 8 BMS2
- SG_ bms2_iso_signal : 7|64@0+ (1,0) [0|1.84467440737096E+019] ""  DC_DC
+ SG_ bms2_iso_signal : 7|64@0+ (1,0) [0|1.84467440737096E+19] ""  DC_DC
 
 BO_ 836 BMS2_InfoVoltageCell4: 8 BMS2
- SG_ bms_statusVoltageCell13 : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell13 : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
 
 BO_ 835 BMS2_InfoVoltageCell3: 8 BMS2
- SG_ bms_statusVoltageCell09 : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell10 : 23|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell11 : 39|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell12 : 55|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell09 : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell10 : 23|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell11 : 39|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell12 : 55|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
 
 BO_ 834 BMS2_InfoVoltageCell2: 8 BMS2
- SG_ bms_statusVoltageCell05 : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell06 : 23|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell07 : 39|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell08 : 55|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell05 : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell06 : 23|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell07 : 39|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell08 : 55|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
 
 BO_ 833 BMS2_InfoVoltageCell1: 8 BMS2
- SG_ bms_statusVoltageCell01 : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell02 : 23|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell03 : 39|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
- SG_ bms_statusVoltageCell04 : 55|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell01 : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell02 : 23|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell03 : 39|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
+ SG_ bms2_statusVoltageCell04 : 55|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
 
 BO_ 832 BMS2_InfoVoltageCell: 8 BMS2
  SG_ bms2_statusVoltageCellAvg : 7|16@0+ (0.0001,0) [0|6.5535] "V"  DC_DC
@@ -193,7 +193,7 @@ BO_ 782 BMS1_InfoContactor: 8 BMS1
  SG_ bms1_statusAdcPackVolt : 23|16@0+ (0.002,0) [0|131.07] "V"  DC_DC
 
 BO_ 2 BMS1_ISO_Message: 8 BMS1
- SG_ bms1_iso_signal : 7|64@0+ (1,0) [0|1.84467440737096E+019] ""  DC_DC
+ SG_ bms1_iso_signal : 7|64@0+ (1,0) [0|1.84467440737096E+19] ""  DC_DC
 
 BO_ 768 BMS1_ControlSystem: 8 BMS1
  SG_ bms1_controlSysMaxChgCurrent : 7|16@0- (0.02,0) [-655|655] "A"  DC_DC
@@ -338,22 +338,22 @@ CM_ BU_ BMS1 "48V Battery Module Master (LGC)";
 CM_ BO_ 3 "Message use for ISO15765 of  BLG";
 CM_ SG_ 3 bms2_iso_signal "Signal use for ISO15765 of BMS0";
 CM_ BO_ 836 "Cell voltage.";
-CM_ SG_ 836 bms_statusVoltageCell13 "Min) Cell voltage.";
+CM_ SG_ 836 bms2_statusVoltageCell13 "Min) Cell voltage.";
 CM_ BO_ 835 "Cell voltage.";
-CM_ SG_ 835 bms_statusVoltageCell09 "Min) Cell voltage.";
-CM_ SG_ 835 bms_statusVoltageCell10 "Min) Cell voltage.";
-CM_ SG_ 835 bms_statusVoltageCell11 "Min) Cell voltage.";
-CM_ SG_ 835 bms_statusVoltageCell12 "Min) Cell voltage.";
+CM_ SG_ 835 bms2_statusVoltageCell09 "Min) Cell voltage.";
+CM_ SG_ 835 bms2_statusVoltageCell10 "Min) Cell voltage.";
+CM_ SG_ 835 bms2_statusVoltageCell11 "Min) Cell voltage.";
+CM_ SG_ 835 bms2_statusVoltageCell12 "Min) Cell voltage.";
 CM_ BO_ 834 "Cell voltage.";
-CM_ SG_ 834 bms_statusVoltageCell05 "Min) Cell voltage.";
-CM_ SG_ 834 bms_statusVoltageCell06 "Min) Cell voltage.";
-CM_ SG_ 834 bms_statusVoltageCell07 "Min) Cell voltage.";
-CM_ SG_ 834 bms_statusVoltageCell08 "Min) Cell voltage.";
+CM_ SG_ 834 bms2_statusVoltageCell05 "Min) Cell voltage.";
+CM_ SG_ 834 bms2_statusVoltageCell06 "Min) Cell voltage.";
+CM_ SG_ 834 bms2_statusVoltageCell07 "Min) Cell voltage.";
+CM_ SG_ 834 bms2_statusVoltageCell08 "Min) Cell voltage.";
 CM_ BO_ 833 "Cell voltage.";
-CM_ SG_ 833 bms_statusVoltageCell01 "Min) Cell voltage.";
-CM_ SG_ 833 bms_statusVoltageCell02 "Min) Cell voltage.";
-CM_ SG_ 833 bms_statusVoltageCell03 "Min) Cell voltage.";
-CM_ SG_ 833 bms_statusVoltageCell04 "Min) Cell voltage.";
+CM_ SG_ 833 bms2_statusVoltageCell01 "Min) Cell voltage.";
+CM_ SG_ 833 bms2_statusVoltageCell02 "Min) Cell voltage.";
+CM_ SG_ 833 bms2_statusVoltageCell03 "Min) Cell voltage.";
+CM_ SG_ 833 bms2_statusVoltageCell04 "Min) Cell voltage.";
 CM_ BO_ 832 "Cell voltage.";
 CM_ SG_ 832 bms2_statusVoltageCellAvg "Min) Average cell voltage.";
 CM_ SG_ 832 bms_statusVoltageCellMin "Min) minimum cell voltage.";
@@ -638,82 +638,82 @@ BA_DEF_DEF_  "GenSigInactiveValue" 0;
 BA_DEF_DEF_  "GenSigStartValue" 0;
 BA_DEF_DEF_  "OriginatingECU" "";
 BA_DEF_DEF_  "SNARequired" "Required";
-BA_ "BusName" "Battery";
-BA_ "BusType" "CAN";
 BA_ "BusID" 136;
+BA_ "BusType" "CAN";
+BA_ "BusName" "Battery";
 BA_ "DBName" "EV";
-BA_ "GenMsgCycleTime" BO_ 836 500;
 BA_ "GenMsgSendType" BO_ 836 0;
-BA_ "GenMsgCycleTime" BO_ 835 500;
+BA_ "GenMsgCycleTime" BO_ 836 500;
 BA_ "GenMsgSendType" BO_ 835 0;
-BA_ "GenMsgCycleTime" BO_ 834 500;
+BA_ "GenMsgCycleTime" BO_ 835 500;
 BA_ "GenMsgSendType" BO_ 834 0;
-BA_ "GenMsgCycleTime" BO_ 833 500;
+BA_ "GenMsgCycleTime" BO_ 834 500;
 BA_ "GenMsgSendType" BO_ 833 0;
-BA_ "GenMsgCycleTime" BO_ 832 500;
+BA_ "GenMsgCycleTime" BO_ 833 500;
 BA_ "GenMsgSendType" BO_ 832 0;
-BA_ "GenMsgCycleTime" BO_ 848 1000;
+BA_ "GenMsgCycleTime" BO_ 832 500;
 BA_ "GenMsgSendType" BO_ 848 0;
-BA_ "GenMsgCycleTime" BO_ 850 500;
+BA_ "GenMsgCycleTime" BO_ 848 1000;
 BA_ "GenMsgSendType" BO_ 850 0;
-BA_ "GenMsgCycleTime" BO_ 826 1000;
+BA_ "GenMsgCycleTime" BO_ 850 500;
 BA_ "GenMsgSendType" BO_ 826 0;
-BA_ "GenMsgCycleTime" BO_ 863 1000;
+BA_ "GenMsgCycleTime" BO_ 826 1000;
 BA_ "GenMsgSendType" BO_ 863 0;
-BA_ "GenMsgCycleTime" BO_ 825 150;
+BA_ "GenMsgCycleTime" BO_ 863 1000;
 BA_ "GenMsgSendType" BO_ 825 0;
-BA_ "GenMsgCycleTime" BO_ 822 150;
+BA_ "GenMsgCycleTime" BO_ 825 150;
 BA_ "GenMsgSendType" BO_ 822 0;
-BA_ "GenMsgCycleTime" BO_ 837 500;
+BA_ "GenMsgCycleTime" BO_ 822 150;
 BA_ "GenMsgSendType" BO_ 837 0;
-BA_ "GenMsgCycleTime" BO_ 830 150;
+BA_ "GenMsgCycleTime" BO_ 837 500;
 BA_ "GenMsgSendType" BO_ 830 0;
-BA_ "GenMsgCycleTime" BO_ 817 1000;
+BA_ "GenMsgCycleTime" BO_ 830 150;
 BA_ "GenMsgSendType" BO_ 817 0;
-BA_ "GenMsgCycleTime" BO_ 820 1000;
+BA_ "GenMsgCycleTime" BO_ 817 1000;
 BA_ "GenMsgSendType" BO_ 820 0;
-BA_ "GenMsgCycleTime" BO_ 819 150;
+BA_ "GenMsgCycleTime" BO_ 820 1000;
 BA_ "GenMsgSendType" BO_ 819 0;
-BA_ "GenMsgCycleTime" BO_ 827 3000;
+BA_ "GenMsgCycleTime" BO_ 819 150;
 BA_ "GenMsgSendType" BO_ 827 0;
-BA_ "GenMsgCycleTime" BO_ 816 150;
+BA_ "GenMsgCycleTime" BO_ 827 3000;
 BA_ "GenMsgSendType" BO_ 816 0;
-BA_ "GenMsgSendType" BO_ 782 0;
+BA_ "GenMsgCycleTime" BO_ 816 150;
 BA_ "GenMsgCycleTime" BO_ 782 150;
-BA_ "GenMsgCycleTime" BO_ 768 150;
+BA_ "GenMsgSendType" BO_ 782 0;
 BA_ "GenMsgSendType" BO_ 768 0;
-BA_ "GenMsgCycleTime" BO_ 769 1000;
+BA_ "GenMsgCycleTime" BO_ 768 150;
 BA_ "GenMsgSendType" BO_ 769 0;
-BA_ "GenMsgCycleTime" BO_ 771 150;
+BA_ "GenMsgCycleTime" BO_ 769 1000;
 BA_ "GenMsgSendType" BO_ 771 0;
-BA_ "GenMsgCycleTime" BO_ 772 1000;
+BA_ "GenMsgCycleTime" BO_ 771 150;
 BA_ "GenMsgSendType" BO_ 772 0;
-BA_ "GenMsgCycleTime" BO_ 774 150;
+BA_ "GenMsgCycleTime" BO_ 772 1000;
 BA_ "GenMsgSendType" BO_ 774 0;
-BA_ "GenMsgCycleTime" BO_ 777 150;
+BA_ "GenMsgCycleTime" BO_ 774 150;
 BA_ "GenMsgSendType" BO_ 777 0;
-BA_ "GenMsgCycleTime" BO_ 778 1000;
+BA_ "GenMsgCycleTime" BO_ 777 150;
 BA_ "GenMsgSendType" BO_ 778 0;
-BA_ "GenMsgCycleTime" BO_ 779 3000;
+BA_ "GenMsgCycleTime" BO_ 778 1000;
 BA_ "GenMsgSendType" BO_ 779 0;
-BA_ "GenMsgCycleTime" BO_ 784 500;
+BA_ "GenMsgCycleTime" BO_ 779 3000;
 BA_ "GenMsgSendType" BO_ 784 0;
-BA_ "GenMsgCycleTime" BO_ 785 500;
+BA_ "GenMsgCycleTime" BO_ 784 500;
 BA_ "GenMsgSendType" BO_ 785 0;
-BA_ "GenMsgCycleTime" BO_ 786 500;
+BA_ "GenMsgCycleTime" BO_ 785 500;
 BA_ "GenMsgSendType" BO_ 786 0;
-BA_ "GenMsgCycleTime" BO_ 787 500;
+BA_ "GenMsgCycleTime" BO_ 786 500;
 BA_ "GenMsgSendType" BO_ 787 0;
-BA_ "GenMsgCycleTime" BO_ 788 500;
+BA_ "GenMsgCycleTime" BO_ 787 500;
 BA_ "GenMsgSendType" BO_ 788 0;
-BA_ "GenMsgCycleTime" BO_ 789 500;
+BA_ "GenMsgCycleTime" BO_ 788 500;
 BA_ "GenMsgSendType" BO_ 789 0;
-BA_ "GenMsgCycleTime" BO_ 800 1000;
+BA_ "GenMsgCycleTime" BO_ 789 500;
 BA_ "GenMsgSendType" BO_ 800 0;
-BA_ "GenMsgCycleTime" BO_ 802 500;
+BA_ "GenMsgCycleTime" BO_ 800 1000;
 BA_ "GenMsgSendType" BO_ 802 0;
-BA_ "GenMsgCycleTime" BO_ 815 1000;
+BA_ "GenMsgCycleTime" BO_ 802 500;
 BA_ "GenMsgSendType" BO_ 815 0;
+BA_ "GenMsgCycleTime" BO_ 815 1000;
 VAL_ 825 bms2_statusCFET 0 "Off" 1 "On" 2 "RSVD1" 3 "RSVD2" ;
 VAL_ 825 bms2_statusDFET 0 "Off" 1 "On" 2 "RSVD1" 3 "RSVD2" ;
 VAL_ 825 bms2_statusLowCapacityAlarm 0 "Clear" 1 "Set" 2 "RSVD1" 3 "RSVD2" ;
