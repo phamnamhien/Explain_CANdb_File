@@ -24,22 +24,36 @@ File `Pack_DBC_V0.1.dbc` là file CAN Database (định dạng Vector DBC) mô t
 Hệ thống sử dụng **2 Pack pin song song**, mỗi Pack có một BMS riêng biệt:
 
 ```
-┌──────────┐     CAN Bus      ┌──────────┐
-│  BMS1    │◄────────────────►│          │
-│ (Pack 1) │                   │  DC_DC   │
+┌──────────┐                   ┌──────────┐
+│  BMS1    │ ── broadcast ──►  │          │
+│ (Pack 1) │   (chu kỳ)        │  DC_DC   │
 │ 13 cells │                   │ Converter│
-└──────────┘                   │          │
-                               │          │
-┌──────────┐                   │          │
-│  BMS2    │◄────────────────►│          │
-│ (Pack 2) │                   └──────────┘
+└──────────┘                   │ (chỉ     │
+                               │  lắng    │
+┌──────────┐                   │  nghe)   │
+│  BMS2    │ ── broadcast ──►  │          │
+│ (Pack 2) │   (chu kỳ)        └──────────┘
 │ 13 cells │
 └──────────┘
 ```
 
 - **BMS1** và **BMS2** là hai module BMS **ngang hàng**, mỗi module quản lý độc lập một Pack pin gồm **13 cell** mắc nối tiếp.
-- Hai BMS đều gửi dữ liệu lên cùng một CAN Bus để DC_DC converter nhận và xử lý.
 - Cả hai BMS có **cấu trúc message và signal giống hệt nhau**, chỉ khác nhau ở CAN ID (BMS1: 0x002, 0x300-0x32F; BMS2: 0x003, 0x330-0x35F).
+
+### Cơ chế truyền thông
+
+**BMS1 và BMS2 tự động broadcast dữ liệu theo chu kỳ cố định (Fixed Periodic).** DC_DC **không hỏi** - nó chỉ lắng nghe trên CAN Bus.
+
+Đây là mô hình **Producer-Consumer** tiêu chuẩn của CAN Bus:
+
+| Vai trò | Node | Hành vi |
+|---|---|---|
+| **Producer** (phát dữ liệu) | BMS1, BMS2 | Tự động gửi message lên CAN Bus theo chu kỳ (150ms / 500ms / 1000ms / 3000ms tùy message) |
+| **Consumer** (nhận dữ liệu) | DC_DC | Lắng nghe trên CAN Bus, lọc theo CAN ID để nhận message cần thiết |
+
+Trong file DBC này, **DC_DC không có message nào là transmitter** - nó chỉ đóng vai trò nhận.
+
+> **Ngoại lệ:** Hai message ISO 15765 (`BMS1_ISO_Message` 0x002 và `BMS2_ISO_Message` 0x003) **không có chu kỳ gửi cố định**. Chúng dùng cho giao tiếp chẩn đoán (diagnostics) theo mô hình **Request-Response** - chỉ hoạt động khi có thiết bị chẩn đoán kết nối vào và gửi yêu cầu. Xem chi tiết tại [ISO15765_Explanation.md](ISO15765_Explanation.md).
 
 ## Bảng Value Table (Bảng tra cứu giá trị)
 
